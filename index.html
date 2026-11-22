@@ -1,0 +1,1331 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Land Change Atlas</title>
+<meta name="description" content="Land cover change at three sites, mapped year by year from Sentinel-2 and Landsat imagery.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='8' height='8' fill='%232a78d6'/%3E%3Crect x='8' width='8' height='8' fill='%23008300'/%3E%3Crect y='8' width='8' height='8' fill='%23eda100'/%3E%3Crect x='8' y='8' width='8' height='8' fill='%23e34948'/%3E%3C/svg%3E">
+<script>try{var t=localStorage.getItem('landchange-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<style>
+/* Leaflet 1.9.4, a JS library for interactive maps. https://leafletjs.com
+ * (c) 2010-2023 Volodymyr Agafonkin, (c) 2010-2011 CloudMade
+ * BSD 2-Clause licence: the full text is in leaflet-LICENSE.txt, beside this page. */
+.leaflet-image-layer,.leaflet-layer,.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-pane,.leaflet-pane>canvas,.leaflet-pane>svg,.leaflet-tile,.leaflet-tile-container,.leaflet-zoom-box{position:absolute;left:0;top:0}.leaflet-container{overflow:hidden}.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-tile{-webkit-user-select:none;-moz-user-select:none;user-select:none;-webkit-user-drag:none}.leaflet-tile::selection{background:0 0}.leaflet-safari .leaflet-tile{image-rendering:-webkit-optimize-contrast}.leaflet-safari .leaflet-tile-container{width:1600px;height:1600px;-webkit-transform-origin:0 0}.leaflet-marker-icon,.leaflet-marker-shadow{display:block}.leaflet-container .leaflet-overlay-pane svg{max-width:none!important;max-height:none!important}.leaflet-container .leaflet-marker-pane img,.leaflet-container .leaflet-shadow-pane img,.leaflet-container .leaflet-tile,.leaflet-container .leaflet-tile-pane img,.leaflet-container img.leaflet-image-layer{max-width:none!important;max-height:none!important;width:auto;padding:0}.leaflet-container img.leaflet-tile{mix-blend-mode:plus-lighter}.leaflet-container.leaflet-touch-zoom{-ms-touch-action:pan-x pan-y;touch-action:pan-x pan-y}.leaflet-container.leaflet-touch-drag{-ms-touch-action:pinch-zoom;touch-action:none;touch-action:pinch-zoom}.leaflet-container.leaflet-touch-drag.leaflet-touch-zoom{-ms-touch-action:none;touch-action:none}.leaflet-container{-webkit-tap-highlight-color:transparent}.leaflet-container a{-webkit-tap-highlight-color:rgba(51,181,229,.4)}.leaflet-tile{filter:inherit;visibility:hidden}.leaflet-tile-loaded{visibility:inherit}.leaflet-zoom-box{width:0;height:0;-moz-box-sizing:border-box;box-sizing:border-box;z-index:800}.leaflet-overlay-pane svg{-moz-user-select:none}.leaflet-pane{z-index:400}.leaflet-tile-pane{z-index:200}.leaflet-overlay-pane{z-index:400}.leaflet-shadow-pane{z-index:500}.leaflet-marker-pane{z-index:600}.leaflet-tooltip-pane{z-index:650}.leaflet-popup-pane{z-index:700}.leaflet-map-pane canvas{z-index:100}.leaflet-map-pane svg{z-index:200}.leaflet-vml-shape{width:1px;height:1px}.lvml{behavior:url(#default#VML);display:inline-block;position:absolute}.leaflet-control{position:relative;z-index:800;pointer-events:visiblePainted;pointer-events:auto}.leaflet-bottom,.leaflet-top{position:absolute;z-index:1000;pointer-events:none}.leaflet-top{top:0}.leaflet-right{right:0}.leaflet-bottom{bottom:0}.leaflet-left{left:0}.leaflet-control{float:left;clear:both}.leaflet-right .leaflet-control{float:right}.leaflet-top .leaflet-control{margin-top:10px}.leaflet-bottom .leaflet-control{margin-bottom:10px}.leaflet-left .leaflet-control{margin-left:10px}.leaflet-right .leaflet-control{margin-right:10px}.leaflet-fade-anim .leaflet-popup{opacity:0;-webkit-transition:opacity .2s linear;-moz-transition:opacity .2s linear;transition:opacity .2s linear}.leaflet-fade-anim .leaflet-map-pane .leaflet-popup{opacity:1}.leaflet-zoom-animated{-webkit-transform-origin:0 0;-ms-transform-origin:0 0;transform-origin:0 0}svg.leaflet-zoom-animated{will-change:transform}.leaflet-zoom-anim .leaflet-zoom-animated{-webkit-transition:-webkit-transform .25s cubic-bezier(0,0,.25,1);-moz-transition:-moz-transform .25s cubic-bezier(0,0,.25,1);transition:transform .25s cubic-bezier(0,0,.25,1)}.leaflet-pan-anim .leaflet-tile,.leaflet-zoom-anim .leaflet-tile{-webkit-transition:none;-moz-transition:none;transition:none}.leaflet-zoom-anim .leaflet-zoom-hide{visibility:hidden}.leaflet-interactive{cursor:pointer}.leaflet-grab{cursor:-webkit-grab;cursor:-moz-grab;cursor:grab}.leaflet-crosshair,.leaflet-crosshair .leaflet-interactive{cursor:crosshair}.leaflet-control,.leaflet-popup-pane{cursor:auto}.leaflet-dragging .leaflet-grab,.leaflet-dragging .leaflet-grab .leaflet-interactive,.leaflet-dragging .leaflet-marker-draggable{cursor:move;cursor:-webkit-grabbing;cursor:-moz-grabbing;cursor:grabbing}.leaflet-image-layer,.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-pane>svg path,.leaflet-tile-container{pointer-events:none}.leaflet-image-layer.leaflet-interactive,.leaflet-marker-icon.leaflet-interactive,.leaflet-pane>svg path.leaflet-interactive,svg.leaflet-image-layer.leaflet-interactive path{pointer-events:visiblePainted;pointer-events:auto}.leaflet-container{background:#ddd;outline-offset:1px}.leaflet-container a{color:#0078a8}.leaflet-zoom-box{border:2px dotted #38f;background:rgba(255,255,255,.5)}.leaflet-container{font-family:"Helvetica Neue",Arial,Helvetica,sans-serif;font-size:12px;font-size:.75rem;line-height:1.5}.leaflet-bar{box-shadow:0 1px 5px rgba(0,0,0,.65);border-radius:4px}.leaflet-bar a{background-color:#fff;border-bottom:1px solid #ccc;width:26px;height:26px;line-height:26px;display:block;text-align:center;text-decoration:none;color:#000}.leaflet-bar a,.leaflet-control-layers-toggle{background-position:50% 50%;background-repeat:no-repeat;display:block}.leaflet-bar a:focus,.leaflet-bar a:hover{background-color:#f4f4f4}.leaflet-bar a:first-child{border-top-left-radius:4px;border-top-right-radius:4px}.leaflet-bar a:last-child{border-bottom-left-radius:4px;border-bottom-right-radius:4px;border-bottom:none}.leaflet-bar a.leaflet-disabled{cursor:default;background-color:#f4f4f4;color:#bbb}.leaflet-touch .leaflet-bar a{width:30px;height:30px;line-height:30px}.leaflet-touch .leaflet-bar a:first-child{border-top-left-radius:2px;border-top-right-radius:2px}.leaflet-touch .leaflet-bar a:last-child{border-bottom-left-radius:2px;border-bottom-right-radius:2px}.leaflet-control-zoom-in,.leaflet-control-zoom-out{font:bold 18px 'Lucida Console',Monaco,monospace;text-indent:1px}.leaflet-touch .leaflet-control-zoom-in,.leaflet-touch .leaflet-control-zoom-out{font-size:22px}.leaflet-control-layers{box-shadow:0 1px 5px rgba(0,0,0,.4);background:#fff;border-radius:5px}.leaflet-control-layers-toggle{background-image:url(images/layers.png);width:36px;height:36px}.leaflet-retina .leaflet-control-layers-toggle{background-image:url(images/layers-2x.png);background-size:26px 26px}.leaflet-touch .leaflet-control-layers-toggle{width:44px;height:44px}.leaflet-control-layers .leaflet-control-layers-list,.leaflet-control-layers-expanded .leaflet-control-layers-toggle{display:none}.leaflet-control-layers-expanded .leaflet-control-layers-list{display:block;position:relative}.leaflet-control-layers-expanded{padding:6px 10px 6px 6px;color:#333;background:#fff}.leaflet-control-layers-scrollbar{overflow-y:scroll;overflow-x:hidden;padding-right:5px}.leaflet-control-layers-selector{margin-top:2px;position:relative;top:1px}.leaflet-control-layers label{display:block;font-size:13px;font-size:1.08333em}.leaflet-control-layers-separator{height:0;border-top:1px solid #ddd;margin:5px -10px 5px -6px}.leaflet-default-icon-path{background-image:url(images/marker-icon.png)}.leaflet-container .leaflet-control-attribution{background:#fff;background:rgba(255,255,255,.8);margin:0}.leaflet-control-attribution,.leaflet-control-scale-line{padding:0 5px;color:#333;line-height:1.4}.leaflet-control-attribution a{text-decoration:none}.leaflet-control-attribution a:focus,.leaflet-control-attribution a:hover{text-decoration:underline}.leaflet-attribution-flag{display:inline!important;vertical-align:baseline!important;width:1em;height:.6669em}.leaflet-left .leaflet-control-scale{margin-left:5px}.leaflet-bottom .leaflet-control-scale{margin-bottom:5px}.leaflet-control-scale-line{border:2px solid #777;border-top:none;line-height:1.1;padding:2px 5px 1px;white-space:nowrap;-moz-box-sizing:border-box;box-sizing:border-box;background:rgba(255,255,255,.8);text-shadow:1px 1px #fff}.leaflet-control-scale-line:not(:first-child){border-top:2px solid #777;border-bottom:none;margin-top:-2px}.leaflet-control-scale-line:not(:first-child):not(:last-child){border-bottom:2px solid #777}.leaflet-touch .leaflet-bar,.leaflet-touch .leaflet-control-attribution,.leaflet-touch .leaflet-control-layers{box-shadow:none}.leaflet-touch .leaflet-bar,.leaflet-touch .leaflet-control-layers{border:2px solid rgba(0,0,0,.2);background-clip:padding-box}.leaflet-popup{position:absolute;text-align:center;margin-bottom:20px}.leaflet-popup-content-wrapper{padding:1px;text-align:left;border-radius:12px}.leaflet-popup-content{margin:13px 24px 13px 20px;line-height:1.3;font-size:13px;font-size:1.08333em;min-height:1px}.leaflet-popup-content p{margin:17px 0;margin:1.3em 0}.leaflet-popup-tip-container{width:40px;height:20px;position:absolute;left:50%;margin-top:-1px;margin-left:-20px;overflow:hidden;pointer-events:none}.leaflet-popup-tip{width:17px;height:17px;padding:1px;margin:-10px auto 0;pointer-events:auto;-webkit-transform:rotate(45deg);-moz-transform:rotate(45deg);-ms-transform:rotate(45deg);transform:rotate(45deg)}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#fff;color:#333;box-shadow:0 3px 14px rgba(0,0,0,.4)}.leaflet-container a.leaflet-popup-close-button{position:absolute;top:0;right:0;border:none;text-align:center;width:24px;height:24px;font:16px/24px Tahoma,Verdana,sans-serif;color:#757575;text-decoration:none;background:0 0}.leaflet-container a.leaflet-popup-close-button:focus,.leaflet-container a.leaflet-popup-close-button:hover{color:#585858}.leaflet-popup-scrolled{overflow:auto}.leaflet-oldie .leaflet-popup-content-wrapper{-ms-zoom:1}.leaflet-oldie .leaflet-popup-tip{width:24px;margin:0 auto}.leaflet-oldie .leaflet-control-layers,.leaflet-oldie .leaflet-control-zoom,.leaflet-oldie .leaflet-popup-content-wrapper,.leaflet-oldie .leaflet-popup-tip{border:1px solid #999}.leaflet-div-icon{background:#fff;border:1px solid #666}.leaflet-tooltip{position:absolute;padding:6px;background-color:#fff;border:1px solid #fff;border-radius:3px;color:#222;white-space:nowrap;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;pointer-events:none;box-shadow:0 1px 3px rgba(0,0,0,.4)}.leaflet-tooltip.leaflet-interactive{cursor:pointer;pointer-events:auto}.leaflet-tooltip-bottom:before,.leaflet-tooltip-left:before,.leaflet-tooltip-right:before,.leaflet-tooltip-top:before{position:absolute;pointer-events:none;border:6px solid transparent;background:0 0;content:""}.leaflet-tooltip-bottom{margin-top:6px}.leaflet-tooltip-top{margin-top:-6px}.leaflet-tooltip-bottom:before,.leaflet-tooltip-top:before{left:50%;margin-left:-6px}.leaflet-tooltip-top:before{bottom:0;margin-bottom:-12px;border-top-color:#fff}.leaflet-tooltip-bottom:before{top:0;margin-top:-12px;margin-left:-6px;border-bottom-color:#fff}.leaflet-tooltip-left{margin-left:-6px}.leaflet-tooltip-right{margin-left:6px}.leaflet-tooltip-left:before,.leaflet-tooltip-right:before{top:50%;margin-top:-6px}.leaflet-tooltip-left:before{right:0;margin-right:-12px;border-left-color:#fff}.leaflet-tooltip-right:before{left:0;margin-left:-12px;border-right-color:#fff}@media print{.leaflet-control{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+/* Layout: an atlas plate. The map with its controls and timeline sits on the left,
+   the numbers and charts on the right; on a phone they stack, map first. */
+:root {
+  --bg: #f4f6f8;
+  --surface: #ffffff;
+  --ink: #12171d;
+  --ink-2: #47525e;
+  --muted: #6f7b88;
+  --line: #dce1e7;
+  --wash: #e9eef3;
+  --accent: #1d4f91;
+  --accent-ink: #ffffff;
+  --map-bg: #e6ebf0;
+  --c-water: #2a78d6;
+  --c-trees: #008300;
+  --c-vegetation: #008300;
+  --c-lowveg: #1baf7a;
+  --c-built: #e34948;
+  --c-bare: #eda100;
+  --c-ref: #898781;
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --mono: ui-monospace, "Cascadia Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1216;
+    --surface: #161b21;
+    --ink: #e9edf1;
+    --ink-2: #b6bfc9;
+    --muted: #8894a1;
+    --line: #28303a;
+    --wash: #1d242c;
+    --accent: #8ab4f8;
+    --accent-ink: #0e1216;
+    --map-bg: #1a2028;
+    --c-water: #3987e5;
+    --c-trees: #0ca30c;
+    --c-vegetation: #0ca30c;
+    --c-lowveg: #199e70;
+    --c-built: #e66767;
+    --c-bare: #c98500;
+    --c-ref: #898781;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1216;
+  --surface: #161b21;
+  --ink: #e9edf1;
+  --ink-2: #b6bfc9;
+  --muted: #8894a1;
+  --line: #28303a;
+  --wash: #1d242c;
+  --accent: #8ab4f8;
+  --accent-ink: #0e1216;
+  --map-bg: #1a2028;
+  --c-water: #3987e5;
+  --c-trees: #0ca30c;
+  --c-vegetation: #0ca30c;
+  --c-lowveg: #199e70;
+  --c-built: #e66767;
+  --c-bare: #c98500;
+  --c-ref: #898781;
+  color-scheme: dark;
+}
+
+[hidden] { display: none !important; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.5;
+}
+.page {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding-block: 20px 44px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+h1, h2, h3, p { margin: 0; }
+h1 { font-size: 1.45rem; font-weight: 600; letter-spacing: -0.01em; }
+h2 { font-size: 1.6rem; font-weight: 600; line-height: 1.2; text-wrap: balance; }
+h3 { font-size: 1.02rem; font-weight: 600; }
+button, select, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.masthead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px 24px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+}
+.lede { color: var(--ink-2); }
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+.tab {
+  padding: 7px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink-2);
+  font-weight: 500;
+  cursor: pointer;
+}
+.tab[aria-current="page"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+
+.intro {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: 20px 32px;
+  align-items: start;
+}
+.intro-text { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.eyebrow, .control-label {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.context { color: var(--ink-2); max-width: 62ch; }
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--line);
+  border-left: 1px solid var(--line);
+}
+.tile {
+  min-width: 0;
+  padding: 12px 14px;
+  background: var(--surface);
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.tile-label { font-size: 0.8rem; color: var(--ink-2); }
+.tile-value { font-family: var(--mono); font-size: 1.5rem; font-weight: 500; line-height: 1.25; }
+.tile-unit { margin-left: 4px; font-size: 0.85rem; color: var(--muted); }
+.tile-note { font-size: 0.78rem; color: var(--muted); }
+
+.workbench {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: 28px;
+  align-items: start;
+}
+.map-column, .side { min-width: 0; }
+.controls { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px 18px; margin-bottom: 10px; }
+.control { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.segmented {
+  display: inline-flex;
+  flex-wrap: wrap;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+}
+.seg {
+  padding: 6px 11px;
+  border: 0;
+  border-right: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink-2);
+  font-size: 0.86rem;
+  cursor: pointer;
+}
+.seg:last-child { border-right: 0; }
+.seg[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+select {
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  font-size: 0.86rem;
+}
+input[type="range"] { accent-color: var(--accent); min-width: 0; }
+#opacity { width: 130px; height: 31px; }
+
+.map-frame {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--map-bg);
+}
+#map { height: min(64vh, 560px); min-height: 340px; }
+.coords {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 500;
+  padding: 3px 7px;
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--ink-2);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  opacity: 0.92;
+  pointer-events: none;
+}
+.coords:empty { display: none; }
+.timeline {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+.play {
+  min-width: 4.6em;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  cursor: pointer;
+}
+.play[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.year-readout { min-width: 4ch; font-family: var(--mono); font-size: 1.3rem; font-weight: 500; text-align: right; }
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 16px;
+  margin-top: 12px;
+  color: var(--ink-2);
+  font-size: 0.85rem;
+}
+.legend-item { display: inline-flex; align-items: center; gap: 6px; }
+.swatch { width: 12px; height: 12px; border-radius: 3px; }
+.ramp { display: inline-flex; overflow: hidden; border-radius: 3px; }
+.ramp span { width: 16px; height: 12px; }
+.series-note { margin-top: 10px; color: var(--muted); font-family: var(--mono); font-size: 0.74rem; }
+.badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 7px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink-2);
+}
+
+.side { display: flex; flex-direction: column; gap: 10px; }
+.side-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 12px; }
+.scope { color: var(--ink-2); font-size: 0.84rem; }
+.link-button { padding: 0; border: 0; background: none; color: var(--accent); font-size: 0.84rem; cursor: pointer; text-decoration: underline; }
+.chart-key { display: flex; flex-wrap: wrap; gap: 4px 16px; color: var(--ink-2); font-size: 0.8rem; }
+.key { display: inline-block; width: 16px; height: 2px; margin-right: 6px; border-radius: 2px; vertical-align: middle; background: var(--ink-2); }
+.key.ref { background: var(--c-ref); }
+.charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px 16px; }
+.chart { min-width: 0; }
+.chart-name { display: flex; align-items: center; gap: 6px; font-size: 0.84rem; font-weight: 500; }
+.plot svg { display: block; width: 100%; height: auto; overflow: visible; }
+.plot .grid { stroke: var(--line); stroke-width: 1; }
+.plot .axis { stroke: var(--muted); stroke-width: 1; }
+.plot .tick, .plot .end { fill: var(--muted); font-family: var(--mono); font-size: 10px; }
+.plot .end { fill: var(--ink-2); font-size: 10.5px; }
+.plot .line { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.plot .line.ref { stroke: var(--c-ref); }
+.plot .dot.own { stroke: var(--bg); stroke-width: 1.5; }
+.plot .dot.ref { fill: var(--bg); stroke: var(--c-ref); stroke-width: 1.5; }
+.plot .rule { stroke: var(--ink-2); stroke-width: 1; opacity: 0.5; }
+.plot .cross { stroke: var(--ink); stroke-width: 1; }
+.table-view summary { color: var(--accent); font-size: 0.86rem; cursor: pointer; }
+.table-wrap { margin-top: 8px; overflow-x: auto; }
+table { border-collapse: collapse; font-size: 0.8rem; font-variant-numeric: tabular-nums; }
+th, td { padding: 4px 10px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+th { color: var(--ink-2); font-weight: 500; }
+th:first-child, td:first-child { text-align: left; }
+.block { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; padding-top: 14px; border-top: 1px solid var(--line); }
+.side-actions { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 6px 16px; }
+.side-actions .table-view { min-width: 0; flex: 1 1 260px; }
+.plot .bar { transition: opacity 120ms; }
+.matrix th, .matrix td { text-align: right; }
+.matrix th:first-child, .matrix td:first-child { text-align: left; }
+.matrix td.same { color: var(--muted); }
+.matrix caption { caption-side: bottom; padding-top: 6px; color: var(--muted); font-size: 0.76rem; text-align: left; }
+.legend-value { color: var(--muted); font-family: var(--mono); font-size: 0.78rem; }
+.hint { margin-top: 8px; color: var(--muted); font-size: 0.78rem; }
+
+.masthead-tools { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px 20px; }
+.inline { display: flex; flex-wrap: wrap; gap: 6px; }
+.button {
+  padding: 6px 11px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink-2);
+  font-size: 0.86rem;
+  cursor: pointer;
+}
+.button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+
+/* Swipe comparison: the earlier year is clipped to the left of this divider. */
+.divider { position: absolute; top: 0; bottom: 0; z-index: 600; width: 2px; margin-left: -1px; background: #ffffff; box-shadow: 0 0 0 1px rgb(0 0 0 / 0.45); }
+.divider-handle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  transform: translate(-50%, -50%);
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 1px 6px rgb(0 0 0 / 0.5);
+  cursor: ew-resize;
+  touch-action: none;
+}
+.divider-handle::before, .divider-handle::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 0;
+  height: 0;
+  border: 5px solid transparent;
+  transform: translateY(-50%);
+}
+.divider-handle::before { left: 4px; border-right-color: var(--accent-ink); }
+.divider-handle::after { right: 4px; border-left-color: var(--accent-ink); }
+.year-tag {
+  position: absolute;
+  top: 44px;
+  z-index: 550;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+  opacity: 0.94;
+  pointer-events: none;
+}
+.year-tag.left { left: 54px; }
+.year-tag.right { right: 10px; }
+
+.map-column:fullscreen { display: flex; flex-direction: column; padding: 16px; background: var(--bg); overflow: auto; }
+.map-column:fullscreen .map-frame { flex: 1 1 auto; min-height: 240px; }
+.map-column:fullscreen #map { height: 100%; min-height: 240px; }
+.ranking { display: flex; flex-direction: column; gap: 2px; }
+.rank {
+  display: grid;
+  grid-template-columns: minmax(0, 10.5em) minmax(0, 1fr) 5.2em;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 5px 6px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  font-size: 0.84rem;
+  text-align: left;
+  cursor: pointer;
+}
+.rank:hover, .rank[aria-pressed="true"] { background: var(--wash); }
+.rank-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rank-track { position: relative; height: 8px; }
+.rank-bar { position: absolute; top: 0; height: 8px; border-radius: 0 4px 4px 0; }
+.rank-bar.negative { border-radius: 4px 0 0 4px; }
+.rank-zero { position: absolute; top: -3px; bottom: -3px; width: 1px; background: var(--muted); }
+.rank-value { color: var(--ink-2); font-family: var(--mono); font-size: 0.8rem; text-align: right; }
+
+.method { padding-top: 18px; border-top: 1px solid var(--line); }
+.method ul { display: flex; flex-direction: column; gap: 6px; max-width: 80ch; margin: 10px 0 0; padding-left: 1.1em; color: var(--ink-2); }
+.footer { max-width: 80ch; margin-top: 14px; color: var(--muted); font-size: 0.8rem; }
+.footer + .footer { margin-top: 6px; }
+.footer a { color: inherit; }
+
+.tooltip {
+  position: fixed;
+  z-index: 2000;
+  min-width: 150px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 0.8rem;
+  box-shadow: 0 6px 20px rgb(0 0 0 / 0.18);
+  pointer-events: none;
+}
+.tip-title { margin-bottom: 4px; color: var(--muted); font-family: var(--mono); font-size: 0.74rem; }
+.tip-row { display: flex; align-items: center; gap: 2px; }
+.tip-row strong { margin-right: 6px; font-family: var(--mono); font-weight: 500; }
+.tip-row .name { color: var(--ink-2); }
+
+/* Map chrome follows the page theme. Zone outlines stay white: they sit on imagery. */
+.leaflet-container { background: var(--map-bg); font-family: var(--font); }
+.leaflet-image-layer.crisp { image-rendering: pixelated; }
+.leaflet-bar a, .leaflet-bar a:hover { background: var(--surface); color: var(--ink); border-bottom-color: var(--line); }
+.leaflet-container .leaflet-control-attribution, .leaflet-control-scale-line {
+  background: var(--surface);
+  color: var(--ink-2);
+  border-color: var(--muted);
+  opacity: 0.9;
+}
+.leaflet-tooltip.map-tip {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font);
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.2);
+}
+.leaflet-tooltip.map-tip::before { display: none; }
+
+@media (max-width: 900px) {
+  .intro, .workbench { grid-template-columns: minmax(0, 1fr); }
+  #map { height: 56vh; min-height: 300px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="masthead">
+    <div class="brand">
+      <h1>Land Change Atlas</h1>
+      <p class="lede">Three places, mapped year by year from open satellite imagery.</p>
+    </div>
+    <div class="masthead-tools">
+      <nav id="tabs" class="tabs" aria-label="Sites"></nav>
+      <div class="control">
+        <span class="control-label">Theme</span>
+        <div id="theme-control" class="segmented" role="group" aria-label="Colour theme"></div>
+      </div>
+    </div>
+  </header>
+
+  <section class="intro" aria-labelledby="site-title">
+    <div class="intro-text">
+      <p id="site-question" class="eyebrow"></p>
+      <h2 id="site-title"></h2>
+      <p id="site-context" class="context"></p>
+    </div>
+    <div id="tiles" class="tiles"></div>
+  </section>
+
+  <section class="workbench">
+    <div class="map-column" id="map-column">
+      <div class="controls">
+        <div class="control" id="series-control-wrap">
+          <span class="control-label">Imagery</span>
+          <div id="series-control" class="segmented" role="group" aria-label="Imagery series"></div>
+        </div>
+        <div class="control">
+          <span class="control-label">Show</span>
+          <div id="overlay-control" class="segmented" role="group" aria-label="Map layer"></div>
+        </div>
+        <div class="control">
+          <label class="control-label" for="opacity">Layer strength</label>
+          <input id="opacity" type="range" min="0" max="100" step="5" value="85">
+        </div>
+        <div class="control" id="zone-control-wrap">
+          <label class="control-label" for="zone-set">Outlines</label>
+          <select id="zone-set"></select>
+        </div>
+        <div class="control">
+          <span class="control-label">Compare two years</span>
+          <div class="inline">
+            <button id="compare-toggle" type="button" class="button" aria-pressed="false">Swipe</button>
+            <select id="compare-year" aria-label="Year shown on the left of the divider" hidden></select>
+          </div>
+        </div>
+        <div class="control">
+          <span class="control-label">Map</span>
+          <div class="inline">
+            <button id="reset-view" type="button" class="button">Reset view</button>
+            <button id="fullscreen" type="button" class="button">Full screen</button>
+          </div>
+        </div>
+      </div>
+      <div class="map-frame" id="map-frame">
+        <div id="map" role="application" aria-label="Map of the site"></div>
+        <div id="coords" class="coords" aria-hidden="true"></div>
+        <div id="tag-left" class="year-tag left" hidden></div>
+        <div id="tag-right" class="year-tag right" hidden></div>
+        <div id="divider" class="divider" hidden>
+          <button id="divider-handle" type="button" class="divider-handle" role="slider"
+                  aria-label="Divider between the two years" aria-valuemin="5" aria-valuemax="95"
+                  aria-valuenow="50"></button>
+        </div>
+      </div>
+      <div class="timeline">
+        <button id="play" type="button" class="button play" aria-pressed="false">Play</button>
+        <input id="year" type="range" step="1" min="0" aria-label="Year">
+        <output id="year-readout" for="year" class="year-readout"></output>
+      </div>
+      <div id="legend" class="legend"></div>
+      <p id="series-note" class="series-note"></p>
+      <p class="hint">Left and right arrow keys step through the years. The page address always
+        holds the current view, so it can be bookmarked or shared.
+        <button id="copy-link" type="button" class="link-button">Copy link</button></p>
+    </div>
+
+    <aside class="side">
+      <div class="side-head">
+        <h3 id="chart-title">Area by class</h3>
+        <button id="chart-reset" type="button" class="link-button" hidden>Back to the whole site</button>
+      </div>
+      <p id="chart-scope" class="scope"></p>
+      <div id="chart-key" class="chart-key"></div>
+      <div id="charts" class="charts"></div>
+      <div class="side-actions">
+        <details class="table-view">
+          <summary>Show these numbers as a table</summary>
+          <div id="table-wrap" class="table-wrap"></div>
+        </details>
+        <button id="download-csv" type="button" class="link-button">Download as CSV</button>
+      </div>
+
+      <div class="block">
+        <h3 id="change-title"></h3>
+        <p class="scope">Bar colours match the Year of change layer on the map.</p>
+        <div id="change-bars" class="plot"></div>
+      </div>
+
+      <div class="block">
+        <h3 id="transition-title"></h3>
+        <p id="transition-scope" class="scope"></p>
+        <div id="transition-table" class="table-wrap"></div>
+      </div>
+
+      <div id="ranking-block" class="block" hidden>
+        <h3 id="ranking-title"></h3>
+        <p class="scope">Pick a row to see that place on the map and in the charts.</p>
+        <div id="ranking" class="ranking"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="method">
+    <h3>How this was made</h3>
+    <ul id="method"></ul>
+    <p id="footer" class="footer"></p>
+    <p class="footer">The map is drawn with <a href="https://leafletjs.com">Leaflet</a> 1.9.4, used
+      under the BSD 2-Clause licence (<a href="leaflet-LICENSE.txt">licence text</a>).</p>
+  </section>
+</div>
+<div id="tooltip" class="tooltip" hidden></div>
+<script src="leaflet.js"></script>
+<script src="data.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  const R = window.REPORT;
+  const SVG = "http://www.w3.org/2000/svg";
+  const THEME_KEY = "landchange-theme";
+  const $ = (id) => document.getElementById(id);
+  const state = {
+    site: null, series: null, year: null, overlay: "classes", opacity: 0.85,
+    zoneSet: null, zone: null, timer: null, compare: false, compareYear: null, split: 0.5,
+  };
+
+  // --- small helpers -------------------------------------------------------------------
+
+  // Build an element. Text always goes in through textContent, never as markup.
+  function h(tag, props, ...children) {
+    const node = document.createElement(tag);
+    for (const [key, value] of Object.entries(props || {})) {
+      if (value == null || value === false) continue;
+      if (key === "class") node.className = value;
+      else if (key === "text") node.textContent = value;
+      else if (key.startsWith("on")) node.addEventListener(key.slice(2), value);
+      else node.setAttribute(key, value === true ? "" : value);
+    }
+    for (const child of children) if (child != null) node.append(child);
+    return node;
+  }
+  function s(tag, attrs) {
+    const node = document.createElementNS(SVG, tag);
+    for (const [key, value] of Object.entries(attrs || {})) node.setAttribute(key, value);
+    return node;
+  }
+  function number(value) {
+    if (value == null) return "–";
+    const digits = Math.abs(value) >= 100 ? 0 : 1;
+    return value.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: digits });
+  }
+  const signed = (value) => (value > 0 ? "+" : "") + number(value);
+  const total = (values) => values.reduce((sum, v) => sum + (v || 0), 0);
+  function niceMax(value) {
+    if (value <= 0) return 1;
+    const power = Math.pow(10, Math.floor(Math.log10(value)));
+    const lead = value / power;
+    return (lead <= 1 ? 1 : lead <= 2 ? 2 : lead <= 5 ? 5 : 10) * power;
+  }
+  function segmented(host, options, current, pick) {
+    host.replaceChildren(...options.map((option) => h("button", {
+      type: "button", class: "seg", "aria-pressed": String(option.id === current),
+      text: option.label, onclick: () => pick(option.id),
+    })));
+  }
+
+  // --- theme ---------------------------------------------------------------------------
+
+  // "auto" follows the system; a choice is remembered on this device.
+  function applyTheme(mode) {
+    if (mode === "auto") delete document.documentElement.dataset.theme;
+    else document.documentElement.dataset.theme = mode;
+    try {
+      if (mode === "auto") localStorage.removeItem(THEME_KEY);
+      else localStorage.setItem(THEME_KEY, mode);
+    } catch (error) { /* storage can be blocked; the choice then lasts for this visit */ }
+    segmented($("theme-control"), [
+      { id: "auto", label: "Auto" }, { id: "light", label: "Light" }, { id: "dark", label: "Dark" },
+    ], mode, applyTheme);
+  }
+  applyTheme(document.documentElement.dataset.theme || "auto");
+
+  // --- the view in the page address ----------------------------------------------------
+
+  function writeAddress() {
+    const view = [state.site.id, state.series.id, state.year, state.overlay].join("/");
+    history.replaceState(null, "", `#${view}`);
+  }
+  function readAddress() {
+    const [site, series, year, overlay] = decodeURIComponent(location.hash.slice(1)).split("/");
+    return { site, series, year: Number(year), overlay };
+  }
+
+  // --- map -----------------------------------------------------------------------------
+
+  const map = L.map("map", { zoomSnap: 0.25, zoomDelta: 0.5, scrollWheelZoom: false });
+  map.attributionControl.setPrefix(false);
+  map.attributionControl.addAttribution("Contains modified Copernicus Sentinel data; Landsat courtesy of USGS");
+  L.control.scale({ imperial: false }).addTo(map);
+  // "base2" and "over2" hold the earlier year of a swipe comparison.
+  for (const [name, z] of [["base", 210], ["base2", 211], ["over", 220], ["over2", 221], ["zones", 430]]) {
+    map.createPane(name).style.zIndex = z;
+  }
+  // The wheel scrolls the page until the reader clicks into the map.
+  map.on("click", () => map.scrollWheelZoom.enable());
+  map.on("mouseout", () => { map.scrollWheelZoom.disable(); $("coords").textContent = ""; });
+  map.on("mousemove", (event) => {
+    const { lat, lng } = event.latlng;
+    $("coords").textContent =
+      `${Math.abs(lat).toFixed(4)}°${lat >= 0 ? "N" : "S"}  ${Math.abs(lng).toFixed(4)}°${lng >= 0 ? "E" : "W"}`;
+  });
+  const layers = { base: null, base2: null, over: null, over2: null };
+  let zoneLayer = null;
+
+  function layerUrl(kind, year) {
+    const paths = state.series.layers;
+    if (kind === "rgb") return `${paths.rgb}${year}.webp`;
+    if (kind === "classes") return `${paths.classes}${year}.png`;
+    return paths.change;
+  }
+
+  // Show `url` in a pane, or clear the pane when url is null.
+  function place(pane, url, crisp) {
+    const layer = layers[pane];
+    if (!url) {
+      if (layer && map.hasLayer(layer)) map.removeLayer(layer);
+      return;
+    }
+    const bounds = L.latLngBounds(state.series.bounds);
+    if (!layer) {
+      layers[pane] = L.imageOverlay(url, bounds, { pane, interactive: false, className: crisp ? "crisp" : "" });
+    } else {
+      layer.setBounds(bounds);
+      layer.setUrl(url);
+    }
+    if (crisp) layers[pane].setOpacity(state.opacity);
+    if (!map.hasLayer(layers[pane])) layers[pane].addTo(map);
+  }
+
+  function updateLayers() {
+    const classes = state.overlay === "classes";
+    place("base", layerUrl("rgb", state.year), false);
+    place("over", state.overlay === "none" ? null : layerUrl(state.overlay, state.year), true);
+    place("base2", state.compare ? layerUrl("rgb", state.compareYear) : null, false);
+    place("over2", state.compare && classes ? layerUrl("classes", state.compareYear) : null, true);
+    updateClip();
+  }
+
+  // Cut the earlier year's panes to the left of the divider, and the later year's
+  // class map to the right. Panes move with the map, so this is redone on every move.
+  function updateClip() {
+    const pane = (name) => map.getPane(name).style;
+    if (!state.compare) {
+      for (const name of ["base2", "over2", "over"]) pane(name).clip = "";
+      return;
+    }
+    const size = map.getSize();
+    const topLeft = map.containerPointToLayerPoint([0, 0]);
+    const bottomRight = map.containerPointToLayerPoint(size);
+    const cut = topLeft.x + Math.round(size.x * state.split);
+    const left = `rect(${topLeft.y}px, ${cut}px, ${bottomRight.y}px, ${topLeft.x}px)`;
+    const right = `rect(${topLeft.y}px, ${bottomRight.x}px, ${bottomRight.y}px, ${cut}px)`;
+    pane("base2").clip = left;
+    pane("over2").clip = left;
+    pane("over").clip = state.overlay === "classes" ? right : "";
+    $("divider").style.left = `${state.split * 100}%`;
+    $("divider-handle").setAttribute("aria-valuenow", String(Math.round(state.split * 100)));
+  }
+  map.on("move zoomend resize", updateClip);
+
+  function preload() {
+    for (const year of state.series.years) {
+      new Image().src = layerUrl("rgb", year);
+      new Image().src = layerUrl("classes", year);
+    }
+  }
+
+  // --- swipe comparison ----------------------------------------------------------------
+
+  function renderCompare() {
+    const on = state.compare;
+    const years = state.series.years;
+    $("compare-toggle").setAttribute("aria-pressed", String(on));
+    for (const id of ["compare-year", "divider", "tag-left", "tag-right"]) $(id).hidden = !on;
+    const select = $("compare-year");
+    select.replaceChildren(...years.map((year) => h("option", { value: String(year), text: `Left: ${year}` })));
+    select.value = String(state.compareYear);
+    $("tag-left").textContent = String(state.compareYear);
+    $("tag-right").textContent = String(state.year);
+  }
+  $("compare-toggle").addEventListener("click", () => {
+    state.compare = !state.compare;
+    renderCompare();
+    updateLayers();
+    renderCharts();
+  });
+  $("compare-year").addEventListener("change", (event) => {
+    state.compareYear = Number(event.target.value);
+    renderCompare();
+    updateLayers();
+    renderCharts();
+  });
+
+  function moveDivider(share) {
+    state.split = Math.max(0.05, Math.min(0.95, share));
+    updateClip();
+  }
+  const handle = $("divider-handle");
+  handle.addEventListener("pointerdown", (event) => {
+    handle.setPointerCapture(event.pointerId);
+    event.preventDefault();
+  });
+  handle.addEventListener("pointermove", (event) => {
+    if (!handle.hasPointerCapture(event.pointerId)) return;
+    const box = $("map-frame").getBoundingClientRect();
+    moveDivider((event.clientX - box.left) / box.width);
+  });
+  handle.addEventListener("keydown", (event) => {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+    moveDivider(state.split + (event.key === "ArrowRight" ? 0.02 : -0.02));
+    event.preventDefault();
+    event.stopPropagation();
+  });
+
+  // --- zones on the map ----------------------------------------------------------------
+
+  function trackedChange(feature) {
+    const values = feature.properties.values;
+    const tracked = state.series.track.classes;
+    const years = state.series.years;
+    // Change is counted from the series' baseline year, which is not always its first.
+    const from = Math.max(0, years.indexOf(state.series.track.since));
+    return total(tracked.map((c) => values[c][years.length - 1])) - total(tracked.map((c) => values[c][from]));
+  }
+
+  function zoneStyle(feature) {
+    const chosen = state.zone === feature;
+    return {
+      color: "#ffffff", weight: chosen ? 3 : 1.2, opacity: 0.95,
+      fillColor: "#ffffff", fillOpacity: chosen ? 0.14 : 0,
+    };
+  }
+
+  function renderZones() {
+    if (zoneLayer) map.removeLayer(zoneLayer);
+    zoneLayer = null;
+    if (!state.zoneSet) return;
+    const years = state.series.years;
+    zoneLayer = L.geoJSON({ type: "FeatureCollection", features: state.zoneSet.features }, {
+      pane: "zones",
+      style: zoneStyle,
+      onEachFeature(feature, layer) {
+        layer.bindTooltip(() => h("div", null,
+          h("strong", { text: feature.properties.name }),
+          h("div", { text: `${state.series.track.name}: ${signed(trackedChange(feature))} km², ${state.series.track.since} to ${years[years.length - 1]}` }),
+        ), { sticky: true, direction: "top", className: "map-tip" });
+        layer.on("click", (event) => { L.DomEvent.stopPropagation(event); selectZone(feature); });
+        layer.on("mouseover", () => layer.setStyle({ weight: 2.6 }));
+        layer.on("mouseout", () => zoneLayer.resetStyle(layer));
+      },
+    }).addTo(map);
+  }
+
+  function selectZone(feature) {
+    state.zone = feature;
+    if (zoneLayer) zoneLayer.setStyle(zoneStyle);
+    if (feature) {
+      map.flyToBounds(L.geoJSON(feature).getBounds(), { padding: [40, 40], maxZoom: 13, duration: 0.6 });
+    } else {
+      map.flyToBounds(L.latLngBounds(state.series.bounds), { duration: 0.6 });
+    }
+    renderCharts();
+    renderLegend();
+    renderRanking();
+  }
+
+  // --- controls ------------------------------------------------------------------------
+
+  function renderControls() {
+    const site = state.site;
+    $("series-control-wrap").hidden = site.series.length < 2;
+    segmented($("series-control"), site.series.map((x) => ({ id: x.id, label: x.label })),
+      state.series.id, (id) => { selectSeries(id); writeAddress(); });
+    segmented($("overlay-control"), [
+      { id: "classes", label: "Land cover" },
+      { id: "change", label: "Year of change" },
+      { id: "none", label: "Satellite only" },
+    ], state.overlay, (id) => {
+      state.overlay = id;
+      renderControls();
+      updateLayers();
+      renderLegend();
+      writeAddress();
+    });
+
+    const zones = state.series.zones;
+    $("zone-control-wrap").hidden = zones.length === 0;
+    const select = $("zone-set");
+    select.replaceChildren(
+      ...zones.map((set) => h("option", { value: set.id, text: set.label })),
+      h("option", { value: "", text: "None" }),
+    );
+    select.value = state.zoneSet ? state.zoneSet.id : "";
+    $("opacity").disabled = state.overlay === "none";
+  }
+
+  function renderLegend() {
+    const series = state.series;
+    const host = $("legend");
+    const index = series.years.indexOf(state.year);
+    if (state.overlay === "classes") {
+      const areas = chartData().pipeline;
+      host.replaceChildren(...series.classes.map((cls) => h("span", { class: "legend-item" },
+        h("span", { class: "swatch", style: `background:${cls.color}` }),
+        h("span", { text: cls.label }),
+        h("span", { class: "legend-value", text: `${number(areas[cls.id][index])} km²` }))));
+    } else if (state.overlay === "change") {
+      const track = series.track;
+      host.replaceChildren(
+        h("span", { text: `${track.label}:` }),
+        h("span", { class: "legend-item" },
+          h("span", { text: String(track.years[0]) }),
+          h("span", { class: "ramp" }, ...track.colors.map((c) => h("span", { style: `background:${c}` }))),
+          h("span", { text: String(track.years[track.years.length - 1]) })),
+        h("span", { text: "Later is darker. This layer stays the same as the year changes." }),
+      );
+    } else {
+      host.replaceChildren(h("span", { text: `Natural-colour composite of ${state.year}.` }));
+    }
+    const quality = series.quality;
+    $("series-note").replaceChildren(
+      h("span", { text: `${series.label} · ${series.note}` }),
+      series.preview ? h("span", { class: "badge", text: "Preview resolution" }) : null,
+      h("br"),
+      h("span", { text: `${state.year}: built from ${quality.scenes[index]} scenes; a typical pixel had ${quality.looks[index]} clear looks.` }),
+    );
+  }
+
+  function setYear(year) {
+    state.year = year;
+    const index = state.series.years.indexOf(year);
+    $("year").value = String(index);
+    $("year").setAttribute("aria-valuetext", String(year));
+    $("year-readout").textContent = String(year);
+    $("tag-right").textContent = String(year);
+    updateLayers();
+    renderLegend();
+    renderCharts();
+    writeAddress();
+  }
+
+  function stopPlaying() {
+    if (state.timer) clearInterval(state.timer);
+    state.timer = null;
+    $("play").textContent = "Play";
+    $("play").setAttribute("aria-pressed", "false");
+  }
+
+  $("play").addEventListener("click", () => {
+    if (state.timer) return stopPlaying();
+    preload();
+    $("play").textContent = "Pause";
+    $("play").setAttribute("aria-pressed", "true");
+    state.timer = setInterval(() => {
+      const years = state.series.years;
+      setYear(years[(years.indexOf(state.year) + 1) % years.length]);
+    }, 950);
+  });
+  $("year").addEventListener("input", (event) => {
+    stopPlaying();
+    setYear(state.series.years[Number(event.target.value)]);
+  });
+  $("opacity").addEventListener("input", (event) => {
+    state.opacity = Number(event.target.value) / 100;
+    for (const name of ["over", "over2"]) if (layers[name]) layers[name].setOpacity(state.opacity);
+  });
+  $("zone-set").addEventListener("change", (event) => {
+    state.zoneSet = state.series.zones.find((set) => set.id === event.target.value) || null;
+    state.zone = null;
+    renderZones();
+    renderCharts();
+    renderLegend();
+    renderRanking();
+  });
+  $("chart-reset").addEventListener("click", () => selectZone(null));
+  $("reset-view").addEventListener("click", () => map.flyToBounds(L.latLngBounds(state.series.bounds), { duration: 0.5 }));
+  $("fullscreen").addEventListener("click", () => {
+    if (document.fullscreenElement) document.exitFullscreen();
+    else if ($("map-column").requestFullscreen) $("map-column").requestFullscreen().catch(() => {});
+  });
+  document.addEventListener("fullscreenchange", () => {
+    $("fullscreen").textContent = document.fullscreenElement ? "Exit full screen" : "Full screen";
+    setTimeout(() => { map.invalidateSize(); updateClip(); }, 80);
+  });
+  $("copy-link").addEventListener("click", () => {
+    const done = (text) => { $("copy-link").textContent = text; setTimeout(() => { $("copy-link").textContent = "Copy link"; }, 1600); };
+    if (!navigator.clipboard) return done("Copy it from the address bar");
+    navigator.clipboard.writeText(location.href).then(() => done("Copied"), () => done("Copy it from the address bar"));
+  });
+  // Arrow keys step through the years, unless a control or the map itself has the focus.
+  document.addEventListener("keydown", (event) => {
+    if (event.altKey || event.ctrlKey || event.metaKey) return;
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+    if (event.target.closest("input, select, textarea, #map")) return;
+    const years = state.series.years;
+    const next = years.indexOf(state.year) + (event.key === "ArrowRight" ? 1 : -1);
+    if (next < 0 || next >= years.length) return;
+    stopPlaying();
+    setYear(years[next]);
+    event.preventDefault();
+  });
+
+  // --- tooltip -------------------------------------------------------------------------
+
+  function showTip(event, title, rows) {
+    const tip = $("tooltip");
+    tip.replaceChildren(
+      h("div", { class: "tip-title", text: title }),
+      ...rows.map((row) => h("div", { class: "tip-row" },
+        h("span", { class: "key", style: `background:${row.color}` }),
+        h("strong", { text: row.value }),
+        h("span", { class: "name", text: row.label }))),
+    );
+    tip.hidden = false;
+    const gap = 14;
+    let x = event.clientX + gap;
+    let y = event.clientY + gap;
+    if (x + tip.offsetWidth > window.innerWidth - 8) x = event.clientX - tip.offsetWidth - gap;
+    if (y + tip.offsetHeight > window.innerHeight - 8) y = event.clientY - tip.offsetHeight - gap;
+    tip.style.left = `${Math.max(8, x)}px`;
+    tip.style.top = `${Math.max(8, y)}px`;
+  }
+  const hideTip = () => { $("tooltip").hidden = true; };
+
+  // --- area charts ---------------------------------------------------------------------
+
+  function chartData() {
+    const chart = state.series.chart;
+    if (state.zone) {
+      return {
+        title: `Area by class: ${state.zone.properties.name}`,
+        scope: `Inside this outline (${state.zoneSet.label.toLowerCase()}).`,
+        pipeline: state.zone.properties.values, reference: null,
+      };
+    }
+    return { title: "Area by class", scope: `${chart.scope}.`, pipeline: chart.pipeline, reference: chart.reference };
+  }
+
+  function axes(svg, width, height, m, top, Y) {
+    for (const share of [0, 0.5, 1]) {
+      const y = Y(top * share);
+      svg.append(s("line", { x1: m.l, x2: width - m.r, y1: y, y2: y, class: share === 0 ? "axis" : "grid" }));
+      const label = s("text", { x: m.l - 6, y: y + 3.5, "text-anchor": "end", class: "tick" });
+      label.textContent = number(top * share);
+      svg.append(label);
+    }
+  }
+
+  function drawChart(host, cls, years, own, ref, refName) {
+    const width = Math.max(200, Math.floor(host.clientWidth));
+    const height = 128;
+    const m = { l: 46, r: 14, t: 14, b: 22 };
+    const top = niceMax(Math.max(0, ...own.concat(ref || []).filter((v) => v != null)));
+    const n = years.length;
+    const X = (i) => m.l + (n === 1 ? 0 : (i / (n - 1)) * (width - m.l - m.r));
+    const Y = (v) => height - m.b - (v / top) * (height - m.t - m.b);
+    const color = `var(--c-${cls.id})`;
+    const svg = s("svg", {
+      viewBox: `0 0 ${width} ${height}`, width, height, role: "img",
+      "aria-label": `${cls.label}: area in square kilometres by year`,
+    });
+    axes(svg, width, height, m, top, Y);
+    for (const i of n > 1 ? [0, n - 1] : [0]) {
+      const label = s("text", { x: X(i), y: height - 6, "text-anchor": i === 0 ? "start" : "end", class: "tick" });
+      label.textContent = String(years[i]);
+      svg.append(label);
+    }
+
+    // Vertical rules mark the selected year and, in a comparison, the earlier year.
+    const selected = years.indexOf(state.year);
+    const marks = state.compare ? [years.indexOf(state.compareYear), selected] : [selected];
+    for (const i of marks) {
+      if (i >= 0) svg.append(s("line", { x1: X(i), x2: X(i), y1: m.t, y2: height - m.b, class: "rule" }));
+    }
+    const path = (values) => {
+      let d = "";
+      let drawing = false;
+      values.forEach((v, i) => {
+        if (v == null) { drawing = false; return; }
+        d += `${drawing ? "L" : "M"}${X(i).toFixed(1)},${Y(v).toFixed(1)}`;
+        drawing = true;
+      });
+      return d;
+    };
+    if (ref) {
+      svg.append(s("path", { d: path(ref), class: "line ref" }));
+      ref.forEach((v, i) => { if (v != null) svg.append(s("circle", { cx: X(i), cy: Y(v), r: 2.6, class: "dot ref" })); });
+    }
+    const line = s("path", { d: path(own), class: "line own" });
+    line.style.stroke = color;
+    svg.append(line);
+    own.forEach((v, i) => {
+      if (v == null) return;
+      const dot = s("circle", { cx: X(i), cy: Y(v), r: marks.includes(i) ? 4.6 : 3, class: "dot own" });
+      dot.style.fill = color;
+      svg.append(dot);
+    });
+    let last = own.length - 1;
+    while (last > 0 && own[last] == null) last -= 1;
+    if (own[last] != null) {
+      const end = s("text", { x: X(last), y: Math.max(10, Y(own[last]) - 8), "text-anchor": "end", class: "end" });
+      end.textContent = number(own[last]);
+      svg.append(end);
+    }
+
+    // The crosshair finds the year; the pointer never has to land on the line.
+    const cross = s("line", { y1: m.t, y2: height - m.b, class: "cross", visibility: "hidden" });
+    const hit = s("rect", { x: m.l - 10, y: 0, width: width - m.l - m.r + 20, height, fill: "transparent" });
+    hit.style.cursor = "pointer";
+    const nearest = (event) => {
+      const box = svg.getBoundingClientRect();
+      const px = (event.clientX - box.left) * (width / box.width);
+      return Math.max(0, Math.min(n - 1, Math.round(((px - m.l) / (width - m.l - m.r)) * (n - 1))));
+    };
+    hit.addEventListener("pointermove", (event) => {
+      const i = nearest(event);
+      cross.setAttribute("x1", X(i));
+      cross.setAttribute("x2", X(i));
+      cross.setAttribute("visibility", "visible");
+      const rows = [{ color, value: `${number(own[i])} km²`, label: "This pipeline" }];
+      if (ref && ref[i] != null) rows.push({ color: "var(--c-ref)", value: `${number(ref[i])} km²`, label: refName });
+      showTip(event, `${cls.label}, ${years[i]}`, rows);
+    });
+    hit.addEventListener("pointerleave", () => { cross.setAttribute("visibility", "hidden"); hideTip(); });
+    hit.addEventListener("click", (event) => { stopPlaying(); setYear(years[nearest(event)]); });
+    svg.append(cross, hit);
+    host.replaceChildren(svg);
+  }
+
+  function renderCharts() {
+    const series = state.series;
+    const data = chartData();
+    $("chart-title").textContent = data.title;
+    $("chart-scope").textContent = data.scope;
+    $("chart-reset").hidden = !state.zone;
+    const refName = data.reference ? data.reference.name : "";
+    $("chart-key").replaceChildren(...(data.reference ? [
+      h("span", null, h("span", { class: "key" }), h("span", { text: "This pipeline, in each class's colour" })),
+      h("span", null, h("span", { class: "key ref" }), h("span", { text: refName })),
+    ] : []));
+
+    const host = $("charts");
+    if (host.children.length !== series.classes.length) {
+      host.replaceChildren(...series.classes.map((cls) => h("div", { class: "chart" },
+        h("div", { class: "chart-name" },
+          h("span", { class: "swatch", style: `background:var(--c-${cls.id})` }), h("span", { text: cls.label })),
+        h("div", { class: "plot" }))));
+    }
+    series.classes.forEach((cls, i) => {
+      drawChart(host.children[i].querySelector(".plot"), cls, series.years, data.pipeline[cls.id],
+        data.reference ? data.reference.values[cls.id] : null, refName);
+    });
+
+    const head = h("tr", null, h("th", { text: "Year" }));
+    for (const cls of series.classes) {
+      head.append(h("th", { text: `${cls.label} (km²)` }));
+      if (data.reference) head.append(h("th", { text: `${cls.label}, ${refName}` }));
+    }
+    const rows = series.years.map((year, i) => {
+      const row = h("tr", null, h("td", { text: String(year) }));
+      for (const cls of series.classes) {
+        row.append(h("td", { text: number(data.pipeline[cls.id][i]) }));
+        if (data.reference) row.append(h("td", { text: number(data.reference.values[cls.id][i]) }));
+      }
+      return row;
+    });
+    $("table-wrap").replaceChildren(h("table", null, h("thead", null, head), h("tbody", null, ...rows)));
+  }
+
+  $("download-csv").addEventListener("click", () => {
+    const series = state.series;
+    const data = chartData();
+    const header = ["year", ...series.classes.map((cls) => `${cls.id}_km2`)];
+    if (data.reference) header.push(...series.classes.map((cls) => `${cls.id}_reference_km2`));
+    const lines = series.years.map((year, i) => {
+      const row = [year, ...series.classes.map((cls) => data.pipeline[cls.id][i])];
+      if (data.reference) row.push(...series.classes.map((cls) => data.reference.values[cls.id][i]));
+      return row.map((v) => (v == null ? "" : v)).join(",");
+    });
+    const place = state.zone ? state.zone.properties.name.toLowerCase().replace(/[^a-z0-9]+/g, "-") : "site";
+    const url = URL.createObjectURL(new Blob([[header.join(","), ...lines].join("\n") + "\n"], { type: "text/csv" }));
+    const link = h("a", { href: url, download: `${state.site.id}-${series.id}-${place}-areas.csv` });
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  });
+
+  // --- when the change happened --------------------------------------------------------
+
+  function renderChangeBars() {
+    const track = state.series.track;
+    $("change-title").textContent = `${track.label}: area by year`;
+    const host = $("change-bars");
+    const width = Math.max(220, Math.floor(host.clientWidth));
+    const height = 136;
+    const m = { l: 46, r: 8, t: 12, b: 22 };
+    const top = niceMax(Math.max(0, ...track.areas));
+    const n = track.years.length;
+    const band = (width - m.l - m.r) / n;
+    const bar = Math.max(2, Math.min(24, band - 2));
+    const base = height - m.b;
+    const Y = (v) => base - (v / top) * (base - m.t);
+    const svg = s("svg", {
+      viewBox: `0 0 ${width} ${height}`, width, height, role: "img",
+      "aria-label": `${track.label}: square kilometres by year`,
+    });
+    axes(svg, width, height, m, top, Y);
+    const every = Math.ceil(n / 7);
+    track.years.forEach((year, i) => {
+      const value = track.areas[i];
+      const x = m.l + i * band + (band - bar) / 2;
+      const y = Y(value);
+      const r = Math.min(4, bar / 2, base - y);
+      // Rounded at the data end, square on the baseline.
+      const shape = s("path", {
+        d: `M${x},${base}V${y + r}Q${x},${y} ${x + r},${y}H${x + bar - r}Q${x + bar},${y} ${x + bar},${y + r}V${base}Z`,
+        fill: track.colors[i], class: "bar",
+      });
+      const hit = s("rect", { x: m.l + i * band, y: m.t, width: band, height: base - m.t, fill: "transparent" });
+      hit.addEventListener("pointermove", (event) => {
+        shape.setAttribute("opacity", "0.7");  // the hovered bar responds
+        showTip(event, `${track.label}, ${year}`,
+          [{ color: track.colors[i], value: `${number(value)} km²`, label: "changed and stayed changed" }]);
+      });
+      hit.addEventListener("pointerleave", () => { shape.removeAttribute("opacity"); hideTip(); });
+      svg.append(shape, hit);
+      if (i % every === 0 || i === n - 1) {
+        const label = s("text", { x: x + bar / 2, y: height - 6, "text-anchor": "middle", class: "tick" });
+        label.textContent = String(year);
+        svg.append(label);
+      }
+    });
+    host.replaceChildren(svg);
+  }
+
+  // --- what became what ----------------------------------------------------------------
+
+  function renderTransitions() {
+    const move = state.series.transitions;
+    const classes = state.series.classes;
+    $("transition-title").textContent = `What became what, ${move.from} to ${move.to}`;
+    $("transition-scope").textContent = `${move.scope}. Rows are the class in ${move.from}, columns the class in ${move.to}, in km².`;
+    let largest = 0;
+    move.matrix.forEach((row, i) => row.forEach((v, j) => { if (i !== j) largest = Math.max(largest, v); }));
+    const head = h("tr", null, h("th", { text: `${move.from} \\ ${move.to}` }),
+      ...classes.map((cls) => h("th", { scope: "col", text: cls.label })));
+    const rows = move.matrix.map((row, i) => h("tr", null,
+      h("th", { scope: "row", text: classes[i].label }),
+      ...row.map((value, j) => {
+        const cell = h("td", { class: i === j ? "same" : null, text: number(value) });
+        if (i !== j && largest > 0 && value > 0) {
+          // Shade by size: the square root keeps small but real flows visible.
+          const strength = Math.round(Math.sqrt(value / largest) * 45);
+          cell.style.background = `color-mix(in srgb, var(--accent) ${strength}%, transparent)`;
+        }
+        return cell;
+      })));
+    $("transition-table").replaceChildren(h("table", { class: "matrix" },
+      h("caption", { text: "Grey cells on the diagonal did not change class." }),
+      h("thead", null, head), h("tbody", null, ...rows)));
+  }
+
+  // --- ranking of zones ----------------------------------------------------------------
+
+  function renderRanking() {
+    const set = state.zoneSet;
+    const block = $("ranking-block");
+    if (!set || set.features.length < 2) { block.hidden = true; return; }
+    block.hidden = false;
+    const years = state.series.years;
+    const ranked = set.features.map((feature) => ({ feature, change: trackedChange(feature) }))
+      .sort((a, b) => b.change - a.change).slice(0, 12);
+    const most = Math.max(0.001, ...ranked.map((row) => Math.abs(row.change)));
+    const twoSided = ranked.some((row) => row.change < 0);
+    const shown = set.features.length > ranked.length ? `, top ${ranked.length} of ${set.features.length}` : "";
+    $("ranking-title").textContent =
+      `Net change in ${state.series.track.name.toLowerCase()}, ${state.series.track.since} to ${years[years.length - 1]}${shown}`;
+    const color = `var(--c-${state.series.track.classes[0]})`;
+    $("ranking").replaceChildren(...ranked.map((row) => {
+      const share = (Math.abs(row.change) / most) * (twoSided ? 50 : 100);
+      const bar = h("span", { class: `rank-bar${row.change < 0 ? " negative" : ""}` });
+      bar.style.background = color;
+      bar.style.width = `${share}%`;
+      if (row.change < 0) bar.style.right = "50%";
+      else bar.style.left = twoSided ? "50%" : "0";
+      const zero = h("span", { class: "rank-zero" });
+      zero.style.left = twoSided ? "50%" : "0";
+      return h("button", {
+        type: "button", class: "rank", "aria-pressed": String(state.zone === row.feature),
+        onclick: () => selectZone(state.zone === row.feature ? null : row.feature),
+      },
+        h("span", { class: "rank-name", text: row.feature.properties.name }),
+        h("span", { class: "rank-track" }, bar, zero),
+        h("span", { class: "rank-value", text: `${signed(row.change)} km²` }));
+    }));
+  }
+
+  // --- site and series -----------------------------------------------------------------
+
+  function selectSeries(id, want) {
+    stopPlaying();
+    const series = state.site.series.find((x) => x.id === id) || state.site.series[0];
+    const years = series.years;
+    state.series = series;
+    state.year = want && years.includes(want.year) ? want.year : years[years.length - 1];
+    if (want && ["classes", "change", "none"].includes(want.overlay)) state.overlay = want.overlay;
+    state.compareYear = years[0];
+    state.zone = null;
+    state.zoneSet = series.zones.find((set) => set.features.length <= 12) || null;
+
+    $("tiles").replaceChildren(...series.tiles.map((tile) => h("div", { class: "tile" },
+      h("div", { class: "tile-label", text: tile.label }),
+      h("div", { class: "tile-value" }, h("span", { text: number(tile.value) }),
+        h("span", { class: "tile-unit", text: tile.unit })),
+      h("div", { class: "tile-note", text: tile.note }))));
+    $("method").replaceChildren(...series.method.map((line) => h("li", { text: line })));
+    $("year").max = String(years.length - 1);
+    $("charts").replaceChildren();
+
+    renderControls();
+    renderCompare();
+    map.fitBounds(L.latLngBounds(series.bounds), { animate: false });
+    renderZones();
+    setYear(state.year);
+    renderChangeBars();
+    renderTransitions();
+    renderRanking();
+  }
+
+  function selectSite(id, want) {
+    const site = R.sites.find((x) => x.id === id) || R.sites[0];
+    state.site = site;
+    $("tabs").replaceChildren(...R.sites.map((x) => h("button", {
+      type: "button", class: "tab", "aria-current": x.id === site.id ? "page" : null, text: x.title,
+      onclick: () => selectSite(x.id),
+    })));
+    $("site-question").textContent = site.question;
+    $("site-title").textContent = site.title;
+    $("site-context").textContent = site.context;
+    selectSeries(want ? want.series : site.series[0].id, want);
+  }
+
+  $("footer").textContent =
+    `Generated ${R.generated}. Contains modified Copernicus Sentinel data (Sentinel-2, read from ` +
+    "Earth Search). Landsat Collection 2 and LCMAP courtesy of the U.S. Geological Survey, read from " +
+    "Planetary Computer. Impact Observatory annual land cover (Impact Observatory, Microsoft and Esri) " +
+    "is used under CC BY 4.0. Global Surface Water: EC JRC/Google. Boundaries: U.S. Census Bureau. " +
+    "Map images are reduced for the web; the analysis ran on the full grid.";
+
+  let resizing = null;
+  new ResizeObserver(() => {
+    clearTimeout(resizing);
+    resizing = setTimeout(() => {
+      map.invalidateSize();
+      updateClip();
+      if (state.series) { renderCharts(); renderChangeBars(); }
+    }, 150);
+  }).observe($("charts"));
+  window.addEventListener("hashchange", () => {
+    const want = readAddress();
+    if (R.sites.some((x) => x.id === want.site)) selectSite(want.site, want);
+  });
+  const first = readAddress();
+  selectSite(first.site, first);
+})();
+</script>
+</body>
+</html>
