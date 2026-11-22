@@ -664,6 +664,16 @@ th:first-child, td:first-child { text-align: left; }
   const layers = { base: null, base2: null, over: null, over2: null };
   let zoneLayer = null;
 
+  // A map laid out while its container has no size (a tab loaded out of sight) cannot
+  // fit anything. Note that, and fit once the container has a size.
+  let needsFit = false;
+  function fitSite() {
+    map.invalidateSize({ animate: false });
+    const size = map.getSize();
+    needsFit = size.x < 40 || size.y < 40;
+    if (!needsFit) map.fitBounds(L.latLngBounds(state.series.bounds), { animate: false });
+  }
+
   function layerUrl(kind, year) {
     const paths = state.series.layers;
     if (kind === "rgb") return `${paths.rgb}${year}.webp`;
@@ -1188,7 +1198,8 @@ th:first-child, td:first-child { text-align: left; }
       });
       hit.addEventListener("pointerleave", () => { shape.removeAttribute("opacity"); hideTip(); });
       svg.append(shape, hit);
-      if (i % every === 0 || i === n - 1) {
+      // The last year is always named; a regular tick right beside it would run into it.
+      if (i === n - 1 || (i % every === 0 && n - 1 - i >= every / 2)) {
         const label = s("text", { x: x + bar / 2, y: height - 6, "text-anchor": "middle", class: "tick" });
         label.textContent = String(year);
         svg.append(label);
@@ -1283,7 +1294,7 @@ th:first-child, td:first-child { text-align: left; }
 
     renderControls();
     renderCompare();
-    map.fitBounds(L.latLngBounds(series.bounds), { animate: false });
+    fitSite();
     renderZones();
     setYear(state.year);
     renderChangeBars();
@@ -1316,6 +1327,7 @@ th:first-child, td:first-child { text-align: left; }
     clearTimeout(resizing);
     resizing = setTimeout(() => {
       map.invalidateSize();
+      if (needsFit && state.series) fitSite();
       updateClip();
       if (state.series) { renderCharts(); renderChangeBars(); }
     }, 150);
