@@ -880,12 +880,13 @@ th:first-child, td:first-child { text-align: left; }
       host.replaceChildren(h("span", { text: `Natural-colour composite of ${state.year}.` }));
     }
     const quality = series.quality;
-    $("series-note").replaceChildren(
+    // replaceChildren writes a missing child out as the word "null", so drop it first.
+    $("series-note").replaceChildren(...[
       h("span", { text: `${series.label} · ${series.note}` }),
       series.preview ? h("span", { class: "badge", text: "Preview resolution" }) : null,
       h("br"),
       h("span", { text: `${state.year}: built from ${quality.scenes[index]} scenes; a typical pixel had ${quality.looks[index]} clear looks.` }),
-    );
+    ].filter(Boolean));
   }
 
   function setYear(year) {
