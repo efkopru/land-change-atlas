@@ -664,14 +664,22 @@ th:first-child, td:first-child { text-align: left; }
   const layers = { base: null, base2: null, over: null, over2: null };
   let zoneLayer = null;
 
-  // A map laid out while its container has no size (a tab loaded out of sight) cannot
-  // fit anything. Note that, and fit once the container has a size.
+  // A page can be laid out before it has a size (a tab or frame loaded out of sight),
+  // and a map cannot be fitted to anything then. It gets a placeholder view, so that
+  // it is ready and its layers exist, and is fitted for real once its container has a
+  // size. The container is measured directly: Leaflet remembers the first size it saw
+  // until the map has a view, so asking the map would keep answering zero.
   let needsFit = false;
   function fitSite() {
+    const bounds = L.latLngBounds(state.series.bounds);
+    const box = $("map");
+    needsFit = box.clientWidth < 40 || box.clientHeight < 40;
+    if (needsFit) {
+      map.setView(bounds.getCenter(), 9, { animate: false });
+      return;
+    }
     map.invalidateSize({ animate: false });
-    const size = map.getSize();
-    needsFit = size.x < 40 || size.y < 40;
-    if (!needsFit) map.fitBounds(L.latLngBounds(state.series.bounds), { animate: false });
+    map.fitBounds(bounds, { animate: false });
   }
 
   function layerUrl(kind, year) {
@@ -1323,7 +1331,7 @@ th:first-child, td:first-child { text-align: left; }
     "Map images are reduced for the web; the analysis ran on the full grid.";
 
   let resizing = null;
-  new ResizeObserver(() => {
+  const resized = new ResizeObserver(() => {
     clearTimeout(resizing);
     resizing = setTimeout(() => {
       map.invalidateSize();
@@ -1331,7 +1339,11 @@ th:first-child, td:first-child { text-align: left; }
       updateClip();
       if (state.series) { renderCharts(); renderChangeBars(); }
     }, 150);
-  }).observe($("charts"));
+  });
+  // The charts column drives the chart sizes; the map is watched too, so that a map
+  // waiting for its first real size is fitted even if the charts did not move.
+  resized.observe($("charts"));
+  resized.observe($("map"));
   window.addEventListener("hashchange", () => {
     const want = readAddress();
     if (R.sites.some((x) => x.id === want.site)) selectSite(want.site, want);
