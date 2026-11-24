@@ -21,6 +21,8 @@ by the next build. The page loads nothing from other servers.
 - Impact Observatory annual land cover (Impact Observatory, Microsoft and Esri), used under
   CC BY 4.0.
 - Global Surface Water: EC JRC/Google.
+- ESA CCI land cover, used as an outside check: ESA Climate Change Initiative and
+  Copernicus Climate Change Service (doi:10.24381/cds.006f2c9a).
 - Boundaries: U.S. Census Bureau.
 - The map is drawn with [Leaflet](https://leafletjs.com) 1.9.4, used under the BSD 2-Clause
   licence. Its text is in [`leaflet-LICENSE.txt`](leaflet-LICENSE.txt).
