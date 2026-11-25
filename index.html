@@ -19,7 +19,7 @@
   --surface: #ffffff;
   --ink: #12171d;
   --ink-2: #47525e;
-  --muted: #6f7b88;
+  --muted: #5d6875; /* 5.2:1 on --bg: small grey text still meets WCAG AA's 4.5:1 */
   --line: #dce1e7;
   --wash: #e9eef3;
   --accent: #1d4f91;
@@ -246,10 +246,18 @@ input[type="range"] { accent-color: var(--accent); min-width: 0; }
   color: var(--ink-2);
   font-size: 0.85rem;
 }
-.legend-item { display: inline-flex; align-items: center; gap: 6px; }
+.legend-item { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; min-width: 0; }
 .swatch { width: 12px; height: 12px; border-radius: 3px; }
-.ramp { display: inline-flex; overflow: hidden; border-radius: 3px; }
-.ramp span { width: 16px; height: 12px; }
+/* 16px a year, but allowed to shrink: 26 years would not fit a phone otherwise. */
+.ramp {
+  display: inline-flex;
+  flex: 0 1 auto;
+  width: calc(var(--n, 13) * 16px);
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 3px;
+}
+.ramp span { flex: 1 1 0; min-width: 0; height: 12px; }
 .series-note { margin-top: 10px; color: var(--muted); font-family: var(--mono); font-size: 0.74rem; }
 .badge {
   display: inline-block;
@@ -890,7 +898,9 @@ th:first-child, td:first-child { text-align: left; }
         h("span", { text: `${track.label}:` }),
         h("span", { class: "legend-item" },
           h("span", { text: String(track.years[0]) }),
-          h("span", { class: "ramp" }, ...track.colors.map((c) => h("span", { style: `background:${c}` }))),
+          // --n sizes the ramp at 16px a year; CSS lets it shrink to fit a narrow screen.
+          h("span", { class: "ramp", style: `--n:${track.colors.length}` },
+            ...track.colors.map((c) => h("span", { style: `background:${c}` }))),
           h("span", { text: String(track.years[track.years.length - 1]) })),
         h("span", { text: "Later is darker. This layer stays the same as the year changes." }),
       );
