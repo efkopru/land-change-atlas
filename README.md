@@ -21,7 +21,9 @@ by the next build. The page loads nothing from other servers.
 - Impact Observatory annual land cover (Impact Observatory, Microsoft and Esri), regrouped
   into the report's classes and resampled to its grid, used under
   [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
-- Global Surface Water: EC JRC/Google.
+- Global Surface Water: EC JRC/Google. Jean-Francois Pekel, Andrew Cottam, Noel Gorelick and
+  Alan S. Belward, High-resolution mapping of global surface water and its long-term changes,
+  Nature 540, 418–422 (2016), doi:10.1038/nature20584.
 - ESA CCI land cover, used as an outside check: ESA Climate Change Initiative and
   Copernicus Climate Change Service (doi:10.24381/cds.006f2c9a).
 - Boundaries: U.S. Census Bureau.

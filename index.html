@@ -1333,14 +1333,17 @@ th:first-child, td:first-child { text-align: left; }
     selectSeries(want ? want.series : site.series[0].id, want);
   }
 
-  // CC BY 4.0 asks for a link to the licence and a note of any change made to the data.
+  // Credits in the form each provider asks for: CC BY 4.0 wants a link to the licence and a
+  // note of any change made to the data, and JRC wants its surface water article cited.
   $("footer").replaceChildren(
     `Generated ${R.generated}. Contains modified Copernicus Sentinel data (Sentinel-2, read from ` +
       "Earth Search). Landsat Collection 2 and LCMAP courtesy of the U.S. Geological Survey, read from " +
       "Planetary Computer. Impact Observatory annual land cover (Impact Observatory, Microsoft and " +
       "Esri), regrouped into this report's classes and resampled to its grid, is used under ",
     h("a", { href: "https://creativecommons.org/licenses/by/4.0/", text: "CC BY 4.0" }),
-    ". Global Surface Water: EC JRC/Google. Land cover for the outside check: " +
+    ". Global Surface Water: EC JRC/Google; Jean-Francois Pekel, Andrew Cottam, Noel Gorelick " +
+      "and Alan S. Belward, High-resolution mapping of global surface water and its long-term " +
+      "changes, Nature 540, 418–422 (2016), doi:10.1038/nature20584. Land cover for the outside check: " +
       "ESA Climate Change Initiative and Copernicus Climate Change Service " +
       "(doi:10.24381/cds.006f2c9a). Boundaries: U.S. Census Bureau. " +
       "Map images are reduced for the web; the analysis ran on the full grid.",
