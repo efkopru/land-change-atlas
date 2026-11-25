@@ -535,7 +535,7 @@ th:first-child, td:first-child { text-align: left; }
       <div class="side-actions">
         <details class="table-view">
           <summary>Show these numbers as a table</summary>
-          <div id="table-wrap" class="table-wrap"></div>
+          <div id="table-wrap" class="table-wrap" tabindex="0" role="region" aria-labelledby="chart-title"></div>
         </details>
         <button id="download-csv" type="button" class="link-button">Download as CSV</button>
       </div>
@@ -549,7 +549,7 @@ th:first-child, td:first-child { text-align: left; }
       <div class="block">
         <h3 id="transition-title"></h3>
         <p id="transition-scope" class="scope"></p>
-        <div id="transition-table" class="table-wrap"></div>
+        <div id="transition-table" class="table-wrap" tabindex="0" role="region" aria-labelledby="transition-title"></div>
       </div>
 
       <div id="ranking-block" class="block" hidden>
@@ -985,11 +985,12 @@ th:first-child, td:first-child { text-align: left; }
     if (!navigator.clipboard) return done("Copy it from the address bar");
     navigator.clipboard.writeText(location.href).then(() => done("Copied"), () => done("Copy it from the address bar"));
   });
-  // Arrow keys step through the years, unless a control or the map itself has the focus.
+  // Arrow keys step through the years, unless a control, the map or a table has the focus:
+  // those use the arrows themselves, and a wide table scrolls sideways with them.
   document.addEventListener("keydown", (event) => {
     if (event.altKey || event.ctrlKey || event.metaKey) return;
     if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
-    if (event.target.closest("input, select, textarea, #map")) return;
+    if (event.target.closest("input, select, textarea, #map, .table-wrap")) return;
     const years = state.series.years;
     const next = years.indexOf(state.year) + (event.key === "ArrowRight" ? 1 : -1);
     if (next < 0 || next >= years.length) return;
