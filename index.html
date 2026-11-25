@@ -647,7 +647,14 @@ th:first-child, td:first-child { text-align: left; }
     history.replaceState(null, "", `#${view}`);
   }
   function readAddress() {
-    const [site, series, year, overlay] = decodeURIComponent(location.hash.slice(1)).split("/");
+    // A mangled link (a stray "%") must not stop the page drawing: it opens the default view.
+    let text = location.hash.slice(1);
+    try {
+      text = decodeURIComponent(text);
+    } catch {
+      text = "";
+    }
+    const [site, series, year, overlay] = text.split("/");
     return { site, series, year: Number(year), overlay };
   }
 
