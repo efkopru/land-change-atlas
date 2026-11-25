@@ -18,8 +18,9 @@ by the next build. The page loads nothing from other servers.
 - Contains modified Copernicus Sentinel data (Sentinel-2, read from Earth Search).
 - Landsat Collection 2 and LCMAP courtesy of the U.S. Geological Survey, read from
   Planetary Computer.
-- Impact Observatory annual land cover (Impact Observatory, Microsoft and Esri), used under
-  CC BY 4.0.
+- Impact Observatory annual land cover (Impact Observatory, Microsoft and Esri), regrouped
+  into the report's classes and resampled to its grid, used under
+  [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 - Global Surface Water: EC JRC/Google.
 - ESA CCI land cover, used as an outside check: ESA Climate Change Initiative and
   Copernicus Climate Change Service (doi:10.24381/cds.006f2c9a).
