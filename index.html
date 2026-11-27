@@ -972,6 +972,9 @@ th:first-child, td:first-child { text-align: left; }
   });
   $("chart-reset").addEventListener("click", () => selectZone(null));
   $("reset-view").addEventListener("click", () => map.flyToBounds(L.latLngBounds(state.series.bounds), { duration: 0.5 }));
+  // Safari on iPhone, and a page that embeds the report without allowing full screen,
+  // cannot show the map full screen; there the button is hidden rather than doing nothing.
+  $("fullscreen").hidden = !document.fullscreenEnabled;
   $("fullscreen").addEventListener("click", () => {
     if (document.fullscreenElement) document.exitFullscreen();
     else if ($("map-column").requestFullscreen) $("map-column").requestFullscreen().catch(() => {});
